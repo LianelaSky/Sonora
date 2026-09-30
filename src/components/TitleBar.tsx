@@ -1,5 +1,5 @@
 import React from 'react';
-import { Minus, Square, X, Music, Sliders, Keyboard, Disc, Search, Radio, Download } from 'lucide-react';
+import { Minus, Square, X, Music, Sliders, Keyboard, Disc, Search, Radio } from 'lucide-react';
 import { Track } from '../types/music';
 
 interface TitleBarProps {
@@ -11,7 +11,6 @@ interface TitleBarProps {
   onOpenShortcuts: () => void;
   onOpenSearch: () => void;
   onOpenShazam: () => void;
-  onOpenWindowsPackage?: () => void;
   searchQuery: string;
 }
 
@@ -24,7 +23,6 @@ export const TitleBar: React.FC<TitleBarProps> = ({
   onOpenShortcuts,
   onOpenSearch,
   onOpenShazam,
-  onOpenWindowsPackage,
   searchQuery
 }) => {
   const handleMinimize = () => {
@@ -95,18 +93,6 @@ export const TitleBar: React.FC<TitleBarProps> = ({
 
       {/* Right: Quick Tools & Windows 11 Caption Controls */}
       <div className="flex items-center gap-1">
-        {/* Windows App Package / Install */}
-        {onOpenWindowsPackage && (
-          <button
-            onClick={onOpenWindowsPackage}
-            className="flex items-center gap-1.5 px-2 py-1 rounded bg-white/[0.08] hover:bg-white/[0.12] text-white/90 text-[11px] font-medium border border-white/10 transition-colors"
-            title="Install or Package as native Windows App"
-          >
-            <Download className="w-3 h-3 text-[#fa2d48]" />
-            <span className="hidden sm:inline">Install App</span>
-          </button>
-        )}
-
         {/* Shazam Song Detection */}
         <button
           onClick={onOpenShazam}

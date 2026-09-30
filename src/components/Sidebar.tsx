@@ -12,8 +12,7 @@ import {
   ListMusic,
   CheckCircle2,
   RefreshCw,
-  Radio,
-  Monitor
+  Radio
 } from 'lucide-react';
 import { LibraryViewMode, SmartPlaylist, UserPlaylist } from '../types/music';
 
@@ -32,7 +31,6 @@ interface SidebarProps {
   onSearchChange: (q: string) => void;
   isSyncingFolders: boolean;
   totalTrackCount: number;
-  onOpenWindowsPackage?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -50,7 +48,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onSearchChange,
   isSyncingFolders,
   totalTrackCount,
-  onOpenWindowsPackage,
 }) => {
   const libraryItems = [
     { id: 'listen-now' as LibraryViewMode, label: 'Listen Now', icon: Radio },
@@ -215,19 +212,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         </div>
       </div>
-
-      {/* Windows App Installation Prompt Button */}
-      {onOpenWindowsPackage && (
-        <div className="px-3 py-2 border-t border-white/[0.06]">
-          <button
-            onClick={onOpenWindowsPackage}
-            className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-gradient-to-r from-[#0078d4] to-[#00bcf2] hover:brightness-110 text-white font-semibold text-xs shadow-md transition-all active:scale-98"
-          >
-            <Monitor className="w-3.5 h-3.5" />
-            <span>Install Windows App</span>
-          </button>
-        </div>
-      )}
 
       {/* Audio Engine Hardware Status Badge (Apple Music style) */}
       <div className="p-3 border-t border-white/[0.06] bg-black/20">
