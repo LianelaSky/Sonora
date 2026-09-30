@@ -12,7 +12,8 @@ import {
   ListMusic,
   CheckCircle2,
   RefreshCw,
-  Radio
+  Radio,
+  Download
 } from 'lucide-react';
 import { LibraryViewMode, SmartPlaylist, UserPlaylist } from '../types/music';
 
@@ -31,6 +32,7 @@ interface SidebarProps {
   onSearchChange: (q: string) => void;
   isSyncingFolders: boolean;
   totalTrackCount: number;
+  onOpenWindowsInstall?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -48,6 +50,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onSearchChange,
   isSyncingFolders,
   totalTrackCount,
+  onOpenWindowsInstall,
 }) => {
   const libraryItems = [
     { id: 'listen-now' as LibraryViewMode, label: 'Listen Now', icon: Radio },
@@ -213,8 +216,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
       </div>
 
-      {/* Audio Engine Hardware Status Badge (Apple Music style) */}
-      <div className="p-3 border-t border-white/[0.06] bg-black/20">
+      {/* Audio Engine Hardware Status Badge & Windows Native App Install (Apple Music style) */}
+      <div className="p-3 border-t border-white/[0.06] bg-black/20 space-y-2">
         <div className="flex items-center justify-between text-[11px]">
           <div className="flex items-center gap-1.5 text-white/60">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
@@ -222,9 +225,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
           <span className="text-[10px] text-white/40 font-mono">24/96 DAC</span>
         </div>
-        <div className="mt-1 text-[10px] text-white/30 truncate">
+        <div className="text-[10px] text-white/30 truncate">
           Offline Storage & Background Active
         </div>
+
+        {onOpenWindowsInstall && (
+          <button
+            onClick={onOpenWindowsInstall}
+            className="w-full mt-1 py-1.5 px-2.5 rounded-lg bg-white/[0.05] hover:bg-[#0078d4]/20 border border-white/10 hover:border-[#0078d4]/40 text-[#2b88d8] text-[11px] font-semibold flex items-center justify-center gap-1.5 transition-colors"
+          >
+            <Download className="w-3 h-3" />
+            <span>Install Windows Desktop App</span>
+          </button>
+        )}
       </div>
     </aside>
   );

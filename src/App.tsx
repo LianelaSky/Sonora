@@ -21,8 +21,10 @@ import { AudioVisualizer } from './components/AudioVisualizer';
 import { QueueDrawer } from './components/QueueDrawer';
 import { CreatePlaylistModal } from './components/CreatePlaylistModal';
 import { ShazamModal } from './components/ShazamModal';
+import { WindowsInstallModal } from './components/WindowsInstallModal';
 import { audioEngine } from './services/audioEngine';
 import { musicDb } from './services/db';
+import { windowsNative } from './services/windowsNative';
 import { 
   INITIAL_TRACKS, 
   DEFAULT_SMART_PLAYLISTS, 
@@ -71,6 +73,7 @@ export default function App() {
   const [showCreatePlaylistModal, setShowCreatePlaylistModal] = useState<boolean>(false);
   const [showShazamModal, setShowShazamModal] = useState<boolean>(false);
   const [shazamTrack, setShazamTrack] = useState<Track | null>(null);
+  const [showWindowsInstallModal, setShowWindowsInstallModal] = useState<boolean>(false);
   const [isMiniPlayer, setIsMiniPlayer] = useState<boolean>(false);
   const [isSyncingFolders, setIsSyncingFolders] = useState<boolean>(false);
 
@@ -164,6 +167,19 @@ export default function App() {
       onSeek: (seconds) => audioEngine.seek(seconds),
     });
 
+    // Windows Native Electron Hardware Media Keys Listener
+    if (typeof window !== 'undefined' && window.electronAPI?.onMediaKey) {
+      window.electronAPI.onMediaKey((action) => {
+        if (action === 'toggle_play') handleTogglePlay();
+        else if (action === 'next') handleNextTrack();
+        else if (action === 'prev') handlePrevTrack();
+        else if (action === 'stop') {
+          audioEngine.stopAll();
+          setIsPlaying(false);
+        }
+      });
+    }
+
     audioEngine.setVolume(volume);
   }, []);
 
@@ -172,6 +188,10 @@ export default function App() {
     setCurrentTrack(track);
     setCurrentTime(0);
     setDuration(track.duration);
+
+    // Windows Native Notification & Taskbar Thumbar state
+    windowsNative.notifyTrackChange(track);
+    windowsNative.updateThumbar(true, track);
 
     // Increment play count
     const updatedTrack: Track = {
@@ -454,6 +474,7 @@ export default function App() {
         onOpenEqualizer={() => setShowEqualizer(true)}
         onOpenShortcuts={() => setShowShortcuts(true)}
         onOpenShazam={() => handleOpenShazam()}
+        onOpenWindowsInstall={() => setShowWindowsInstallModal(true)}
         onOpenSearch={() => {
           setCurrentView('search');
           const input = document.getElementById('sidebar-search-input');
@@ -495,6 +516,7 @@ export default function App() {
           onSearchChange={setSearchQuery}
           isSyncingFolders={isSyncingFolders}
           totalTrackCount={tracks.length}
+          onOpenWindowsInstall={() => setShowWindowsInstallModal(true)}
         />
 
         {/* Primary Content Area */}
@@ -648,6 +670,13 @@ export default function App() {
           track={shazamTrack || currentTrack}
           onApplyMetadata={handleApplyShazamMetadata}
           onClose={() => setShowShazamModal(false)}
+        />
+      )}
+
+      {/* Windows Native Desktop Setup Modal */}
+      {showWindowsInstallModal && (
+        <WindowsInstallModal
+          onClose={() => setShowWindowsInstallModal(false)}
         />
       )}
     </div>

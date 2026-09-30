@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  IgnorableNamespaces="uap rescap">
+
+  <Identity
+    Name="Sonora.Music.Native"
+    Publisher="CN=SonoraMusic"
+    Version="1.0.0.0" />
+
+  <Properties>
+    <DisplayName>Sonora Music</DisplayName>
+    <PublisherDisplayName>Sonora Music</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+  </Properties>
+
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0" MaxVersionTested="10.0.22621.0" />
+  </Dependencies>
+
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust" />
+    <uap:Capability Name="musicLibrary" />
+  </Capabilities>
+
+  <Applications>
+    <Application Id="App"
+      Executable="$targetnametargetfolder$\Sonora.Native.exe"
+      EntryPoint="$targetentrypoint$">
+      <uap:VisualElements
+        DisplayName="Sonora Music"
+        Description="Windows Native High-Resolution Audio Player with WASAPI Exclusive Mode and Apple Music Fluid Design"
+        BackgroundColor="#0D0D12"
+        Square150x150Logo="Assets\Square150x150Logo.png"
+        Square44x44Logo="Assets\Square44x44Logo.png">
+        <uap:DefaultTile ShortName="Sonora" />
+      </uap:VisualElements>
+      <Extensions>
+        <!-- Windows File Associations for High-Res and Lossless Formats -->
+        <uap:Extension Category="windows.fileTypeAssociation">
+          <uap:FileTypeAssociation Name="audio">
+            <uap:SupportedFileTypes>
+              <uap:FileType>.flac</uap:FileType>
+              <uap:FileType>.alac</uap:FileType>
+              <uap:FileType>.wav</uap:FileType>
+              <uap:FileType>.mp3</uap:FileType>
+              <uap:FileType>.m4a</uap:FileType>
+              <uap:FileType>.lrc</uap:FileType>
+            </uap:SupportedFileTypes>
+          </uap:FileTypeAssociation>
+        </uap:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+</Package>

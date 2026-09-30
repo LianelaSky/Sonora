@@ -1,0 +1,139 @@
+<Window
+    x:Class="Sonora.Native.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Sonora Music">
+
+    <Grid Background="#0D0D12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" /> <!-- Custom Windows 11 AppTitleBar -->
+            <RowDefinition Height="*" />  <!-- Main Workspace -->
+            <RowDefinition Height="80" /> <!-- Apple Music Bottom Player Bar -->
+        </Grid.RowDefinitions>
+
+        <!-- Custom Windows 11 Fluent TitleBar -->
+        <Grid x:Name="AppTitleBar" Grid.Row="0" Background="#121217" Padding="12,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                <FontIcon Glyph="&#xE8D6;" Foreground="#FA2D48" FontSize="16" />
+                <TextBlock Text="Sonora Music" FontWeight="SemiBold" FontSize="12" Foreground="White" />
+            </StackPanel>
+
+            <!-- Search Bar in TitleBar -->
+            <AutoSuggestBox Grid.Column="1" HorizontalAlignment="Center" Width="320" 
+                            PlaceholderText="Search library &amp; lyrics..." QueryIcon="Find"
+                            VerticalAlignment="Center" />
+
+            <!-- TitleBar Action Buttons -->
+            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                <!-- Shazam Auto-Detect -->
+                <Button x:Name="BtnShazam" Click="BtnShazam_Click" Background="#2000D4FF" BorderBrush="#4000D4FF" Padding="8,4">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <FontIcon Glyph="&#xE8B9;" Foreground="#00D4FF" FontSize="12" />
+                        <TextBlock Text="Shazam" Foreground="#00D4FF" FontSize="11" FontWeight="SemiBold" />
+                    </StackPanel>
+                </Button>
+
+                <!-- WASAPI Exclusive Mode Toggle -->
+                <ToggleButton x:Name="ToggleWasapiExclusive" Checked="ToggleWasapi_Checked" Unchecked="ToggleWasapi_Unchecked"
+                              Content="WASAPI Exclusive" FontSize="11" Padding="8,4" Background="#15FFFFFF" />
+            </StackPanel>
+        </Grid>
+
+        <!-- Main Content Area: Sidebar + Library Views -->
+        <NavigationView x:Name="NavView" Grid.Row="1" PaneDisplayMode="Left" IsSettingsVisible="False"
+                        ItemInvoked="NavView_ItemInvoked" SelectionChanged="NavView_SelectionChanged">
+            <NavigationView.MenuItems>
+                <NavigationViewItem Content="Listen Now" Tag="ListenNow" Icon="MusicInfo" IsSelected="True" />
+                <NavigationViewItem Content="Songs" Tag="Songs" Icon="Audio" />
+                <NavigationViewItem Content="Albums" Tag="Albums" Icon="BrowsePhotos" />
+                <NavigationViewItem Content="Artists" Tag="Artists" Icon="People" />
+                <NavigationViewItem Content="Local Folders" Tag="Folders" Icon="Folder" />
+            </NavigationView.MenuItems>
+
+            <Grid Padding="24">
+                <!-- Songs Table View -->
+                <ListView x:Name="TracksListView" DoubleTapped="TracksListView_DoubleTapped" SelectionMode="Single">
+                    <ListView.Header>
+                        <Grid Padding="12,6" BorderBrush="#20FFFFFF" BorderThickness="0,0,0,1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40" />
+                                <ColumnDefinition Width="3*" />
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="100" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="#" Foreground="#60FFFFFF" FontSize="11" />
+                            <TextBlock Grid.Column="1" Text="TITLE" Foreground="#60FFFFFF" FontSize="11" />
+                            <TextBlock Grid.Column="2" Text="ARTIST" Foreground="#60FFFFFF" FontSize="11" />
+                            <TextBlock Grid.Column="3" Text="ALBUM" Foreground="#60FFFFFF" FontSize="11" />
+                            <TextBlock Grid.Column="4" Text="TIME" HorizontalAlignment="Right" Foreground="#60FFFFFF" FontSize="11" />
+                        </Grid>
+                    </ListView.Header>
+                </ListView>
+            </Grid>
+        </NavigationView>
+
+        <!-- Apple Music Bottom Player Bar -->
+        <Border Grid.Row="2" Background="#14141B" BorderBrush="#18FFFFFF" BorderThickness="0,1,0,0" Padding="16,8">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="280" /> <!-- Left: Track Details -->
+                    <ColumnDefinition Width="*" />   <!-- Center: Controls & Scrubber -->
+                    <ColumnDefinition Width="280" /> <!-- Right: Volume & Extras -->
+                </Grid.ColumnDefinitions>
+
+                <!-- Left: Artwork & Metadata -->
+                <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                    <Border CornerRadius="6" Width="48" Height="48" Background="#20FFFFFF">
+                        <FontIcon Glyph="&#xE8D6;" Foreground="#40FFFFFF" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <StackPanel VerticalAlignment="Center" Spacing="2">
+                        <TextBlock x:Name="TxtNowPlayingTitle" Text="Not Playing" FontWeight="SemiBold" FontSize="13" Foreground="White" />
+                        <TextBlock x:Name="TxtNowPlayingArtist" Text="Select a track to start" FontSize="11" Foreground="#80FFFFFF" />
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Center: Transport & Progress Scrubber -->
+                <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="4" Width="480">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="16">
+                        <Button x:Name="BtnPrev" Click="BtnPrev_Click" Content="&#xE892;" FontFamily="Segoe MDL2 Assets" Background="Transparent" />
+                        <Button x:Name="BtnPlayPause" Click="BtnPlayPause_Click" Content="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="18"
+                                Background="#FA2D48" Foreground="White" CornerRadius="20" Width="40" Height="40" />
+                        <Button x:Name="BtnNext" Click="BtnNext_Click" Content="&#xE893;" FontFamily="Segoe MDL2 Assets" Background="Transparent" />
+                    </StackPanel>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="45" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="45" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock x:Name="TxtCurrentTime" Text="0:00" FontSize="10" Foreground="#60FFFFFF" VerticalAlignment="Center" />
+                        <Slider x:Name="SliderProgress" Grid.Column="1" Minimum="0" Maximum="100" Margin="8,0"
+                                ValueChanged="SliderProgress_ValueChanged" />
+                        <TextBlock x:Name="TxtTotalTime" Grid.Column="2" Text="0:00" FontSize="10" Foreground="#60FFFFFF" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                    </Grid>
+                </StackPanel>
+
+                <!-- Right: Volume & Real-time Lyrics Toggle -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Spacing="12">
+                    <Button x:Name="BtnLyrics" Click="BtnLyrics_Click" Content="&#xE90A;" FontFamily="Segoe MDL2 Assets"
+                            ToolTipService.ToolTip="Live Synchronized Lyrics" Background="Transparent" />
+                    <Button x:Name="BtnEqualizer" Click="BtnEqualizer_Click" Content="&#xE9E9;" FontFamily="Segoe MDL2 Assets"
+                            ToolTipService.ToolTip="10-Band Graphic Equalizer" Background="Transparent" />
+                    <Slider x:Name="SliderVolume" Width="100" Minimum="0" Maximum="1" StepFrequency="0.01" Value="0.85"
+                            ValueChanged="SliderVolume_ValueChanged" />
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

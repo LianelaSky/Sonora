@@ -1,6 +1,7 @@
 import React from 'react';
-import { Minus, Square, X, Music, Sliders, Keyboard, Disc, Search, Radio } from 'lucide-react';
+import { Minus, Square, X, Music, Sliders, Keyboard, Disc, Search, Radio, Download, AppWindow } from 'lucide-react';
 import { Track } from '../types/music';
+import { windowsNative } from '../services/windowsNative';
 
 interface TitleBarProps {
   currentTrack: Track | null;
@@ -11,6 +12,7 @@ interface TitleBarProps {
   onOpenShortcuts: () => void;
   onOpenSearch: () => void;
   onOpenShazam: () => void;
+  onOpenWindowsInstall?: () => void;
   searchQuery: string;
 }
 
@@ -23,25 +25,23 @@ export const TitleBar: React.FC<TitleBarProps> = ({
   onOpenShortcuts,
   onOpenSearch,
   onOpenShazam,
+  onOpenWindowsInstall,
   searchQuery
 }) => {
   const handleMinimize = () => {
-    // Windows simulation: toggle mini player or subtle feedback
-    onToggleMiniPlayer();
+    windowsNative.minimize(onToggleMiniPlayer);
   };
 
   const handleMaximize = () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(() => {});
-    } else {
-      document.exitFullscreen().catch(() => {});
-    }
+    windowsNative.maximize();
   };
 
   const handleClose = () => {
-    if (confirm('Minimize Sonora Music to background? Background audio will continue playing.')) {
-      onToggleMiniPlayer();
-    }
+    windowsNative.close(() => {
+      if (confirm('Minimize Sonora Music to background? Audio will continue playing.')) {
+        onToggleMiniPlayer();
+      }
+    });
   };
 
   return (
@@ -102,6 +102,18 @@ export const TitleBar: React.FC<TitleBarProps> = ({
           <Radio className="w-3 h-3 animate-pulse" />
           <span className="hidden lg:inline">Shazam</span>
         </button>
+
+        {/* Windows Native Install Action */}
+        {onOpenWindowsInstall && !windowsNative.isStandalonePWA() && (
+          <button
+            onClick={onOpenWindowsInstall}
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#0078d4]/20 hover:bg-[#0078d4]/30 text-[#2b88d8] text-[11px] font-semibold border border-[#0078d4]/30 transition-colors"
+            title="Install Sonora as a Native Windows App"
+          >
+            <Download className="w-3 h-3" />
+            <span className="hidden sm:inline">Install App</span>
+          </button>
+        )}
 
         <button
           onClick={onOpenEqualizer}
