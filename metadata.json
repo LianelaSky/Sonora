@@ -1,0 +1,6 @@
+{
+  "name": "Sonora Music",
+  "description": "Windows-native Apple Music experience for local music collections with high-resolution audio, real-time offline lyrics, smart playlists, and local folder synchronization.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
