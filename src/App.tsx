@@ -21,6 +21,7 @@ import { AudioVisualizer } from './components/AudioVisualizer';
 import { QueueDrawer } from './components/QueueDrawer';
 import { CreatePlaylistModal } from './components/CreatePlaylistModal';
 import { ShazamModal } from './components/ShazamModal';
+import { WindowsPackageModal } from './components/WindowsPackageModal';
 import { audioEngine } from './services/audioEngine';
 import { musicDb } from './services/db';
 import { 
@@ -71,6 +72,7 @@ export default function App() {
   const [showCreatePlaylistModal, setShowCreatePlaylistModal] = useState<boolean>(false);
   const [showShazamModal, setShowShazamModal] = useState<boolean>(false);
   const [shazamTrack, setShazamTrack] = useState<Track | null>(null);
+  const [showWindowsPackageModal, setShowWindowsPackageModal] = useState<boolean>(false);
   const [isMiniPlayer, setIsMiniPlayer] = useState<boolean>(false);
   const [isSyncingFolders, setIsSyncingFolders] = useState<boolean>(false);
 
@@ -454,6 +456,7 @@ export default function App() {
         onOpenEqualizer={() => setShowEqualizer(true)}
         onOpenShortcuts={() => setShowShortcuts(true)}
         onOpenShazam={() => handleOpenShazam()}
+        onOpenWindowsPackage={() => setShowWindowsPackageModal(true)}
         onOpenSearch={() => {
           setCurrentView('search');
           const input = document.getElementById('sidebar-search-input');
@@ -495,6 +498,7 @@ export default function App() {
           onSearchChange={setSearchQuery}
           isSyncingFolders={isSyncingFolders}
           totalTrackCount={tracks.length}
+          onOpenWindowsPackage={() => setShowWindowsPackageModal(true)}
         />
 
         {/* Primary Content Area */}
@@ -648,6 +652,13 @@ export default function App() {
           track={shazamTrack || currentTrack}
           onApplyMetadata={handleApplyShazamMetadata}
           onClose={() => setShowShazamModal(false)}
+        />
+      )}
+
+      {/* Windows Package & Install Center Modal */}
+      {showWindowsPackageModal && (
+        <WindowsPackageModal
+          onClose={() => setShowWindowsPackageModal(false)}
         />
       )}
     </div>
